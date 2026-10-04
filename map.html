@@ -2,7 +2,8 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#2c3e50">
     <title>Карта и статистика: Необращения в гос. клиники</title>
     <style>
         /* === ОБЩИЕ СТИЛИ === */
@@ -144,6 +145,46 @@
         .c-yellow { background-color: var(--yellow); color: #333; text-shadow: none; }
         .c-orange { background-color: var(--orange); }
         .c-red { background-color: var(--red); }
+
+        /* === МОБИЛЬНАЯ ОПТИМИЗАЦИЯ === */
+        html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+        .map-scroll { width: 100%; min-width: 0; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .map-hint { display: none; }
+        @media (hover: none) { tr:hover { background-color: transparent; } }
+
+        @media (max-width: 768px) {
+            body { padding: 12px max(12px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left)); }
+            h1 { font-size: 22px; line-height: 1.25; }
+            h2 { font-size: 18px; line-height: 1.3; margin: 0 0 12px; }
+            .subtitle { font-size: 15px; margin-bottom: 16px; }
+            .description { font-size: 15px; line-height: 1.55; text-align: left; margin-bottom: 16px; }
+
+            .legend { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 0 0 16px; }
+            .legend-item { font-size: 13px; line-height: 1.25; padding: 10px 12px; border-radius: 12px; }
+            .color-box { flex: none; width: 16px; height: 16px; margin-right: 8px; }
+
+            .map-container { display: block; padding: 8px; border-radius: 10px; }
+            .map-hint { display: block; text-align: center; font-size: 13px; color: #7f8c8d; margin: 2px 0 8px; }
+
+            /* Таблица -> карточки */
+            table, tbody { display: block; width: 100%; background: none; box-shadow: none; border-radius: 0; }
+            table { margin-bottom: 24px; }
+            thead { display: none; }
+            tr { display: grid; grid-template-columns: 28px 1fr auto; grid-template-areas: "num name badge" "why why why";
+                 column-gap: 10px; row-gap: 6px; align-items: center; background: #fff; padding: 12px; margin-bottom: 8px;
+                 border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+            td { display: block; padding: 0; border: 0; }
+            td:nth-child(1) { grid-area: num; color: #95a5a6; font-size: 13px; font-weight: 600; }
+            td:nth-child(2) { grid-area: name; font-size: 15px; font-weight: 600; line-height: 1.3; }
+            td:nth-child(3) { grid-area: badge; text-align: right !important; }
+            td:nth-child(4) { grid-area: why; padding-left: 38px; font-size: 14px; line-height: 1.45; color: #5d6d7e; }
+            .badge { font-size: 15px; padding: 6px 10px; min-width: 52px; }
+
+            /* Заголовки групп прилипают к верху экрана */
+            tr.group-row { display: block; position: sticky; top: 0; z-index: 3; margin: 0 0 8px; padding: 4px 0 8px;
+                           background: var(--bg); border-radius: 0; box-shadow: none; }
+            .group-header { display: block; padding: 10px 12px; font-size: 14px; border-radius: 8px; }
+        }
     </style>
 
     <!-- ПОДКЛЮЧЕНИЕ GOOGLE CHARTS -->
@@ -259,8 +300,27 @@
                 tooltip: {isHtml: false}
             };
 
-            var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
-            chart.draw(data, options);
+            var box = document.getElementById('map_scroll');
+            var el = document.getElementById('regions_div');
+            var chart = new google.visualization.GeoChart(el);
+
+            // На телефоне карта шире экрана: двигается пальцем, регионы крупнее и удобнее для нажатия
+            function render() {
+                var mobile = window.innerWidth <= 768;
+                var w = mobile ? Math.max(box.clientWidth, 820) : box.clientWidth;
+                el.style.width = w + 'px';
+                el.style.height = Math.min(600, Math.round(w / 1.8)) + 'px';
+                chart.draw(data, options);
+            }
+            render();
+
+            var lastW = window.innerWidth, timer;
+            window.addEventListener('resize', function () {
+                clearTimeout(timer);
+                timer = setTimeout(function () {
+                    if (window.innerWidth !== lastW) { lastW = window.innerWidth; render(); }
+                }, 200);
+            });
         }
     </script>
 </head>
@@ -285,7 +345,10 @@
 
     <!-- Карта -->
     <div class="map-container">
-        <div id="regions_div"></div>
+        <div class="map-hint">Нажмите на регион, чтобы увидеть процент. Карту можно двигать пальцем.</div>
+        <div class="map-scroll" id="map_scroll">
+            <div id="regions_div"></div>
+        </div>
     </div>
 
     <br><br>
@@ -303,7 +366,7 @@
         </thead>
         <tbody>
             <!-- ЗЕЛЕНАЯ ГРУППА -->
-            <tr><th colspan="4" class="group-header bg-green">Зеленая группа (< 45%)</th></tr>
+            <tr class="group-row"><th colspan="4" class="group-header bg-green">Зеленая группа (< 45%)</th></tr>
             <tr><td>1</td><td>г. Москва</td><td style="text-align: center;"><span class="badge c-green">32%</span></td><td>Используют качественные платные услуги клиник</td></tr>
             <tr><td>2</td><td>г. Санкт-Петербург</td><td style="text-align: center;"><span class="badge c-green">34%</span></td><td>Доступность частных клиник по ДМС</td></tr>
             <tr><td>3</td><td>Республика Татарстан</td><td style="text-align: center;"><span class="badge c-green">35%</span></td><td>Предпочитают современные частные медицинские центры</td></tr>
@@ -318,7 +381,7 @@
             <tr><td>12</td><td>Сахалинская область</td><td style="text-align: center;"><span class="badge c-green">44%</span></td><td>Высокая занятость, редкие легкие недомогания</td></tr>
 
             <!-- ЖЕЛТАЯ ГРУППА -->
-            <tr><th colspan="4" class="group-header bg-yellow">Желтая группа (46% - 55%)</th></tr>
+            <tr class="group-row"><th colspan="4" class="group-header bg-yellow">Желтая группа (46% - 55%)</th></tr>
             <tr><td>13</td><td>Воронежская область</td><td style="text-align: center;"><span class="badge c-yellow">46%</span></td><td>Длинные очереди, нехватка времени пациентов</td></tr>
             <tr><td>14</td><td>Пензенская область</td><td style="text-align: center;"><span class="badge c-yellow">46%</span></td><td>Предпочтение платных услуг из-за скорости</td></tr>
             <tr><td>15</td><td>Удмуртская Республика</td><td style="text-align: center;"><span class="badge c-yellow">47%</span></td><td>Формальный подход врачей, сложная бюрократия</td></tr>
@@ -350,7 +413,7 @@
             <tr><td>41</td><td>Нижегородская область</td><td style="text-align: center;"><span class="badge c-yellow">55%</span></td><td>Долгое ожидание плановой медицинской помощи</td></tr>
 
             <!-- ОРАНЖЕВАЯ ГРУППА -->
-            <tr><th colspan="4" class="group-header bg-orange">Оранжевая группа (56% - 65%)</th></tr>
+            <tr class="group-row"><th colspan="4" class="group-header bg-orange">Оранжевая группа (56% - 65%)</th></tr>
             <tr><td>42</td><td>Пермский край</td><td style="text-align: center;"><span class="badge c-orange">56%</span></td><td>Длинные очереди к узким специалистам</td></tr>
             <tr><td>43</td><td>Кемеровская область</td><td style="text-align: center;"><span class="badge c-orange">56%</span></td><td>Грубость персонала, долгое время ожидания</td></tr>
             <tr><td>44</td><td>Республика Северная Осетия — Алания</td><td style="text-align: center;"><span class="badge c-orange">56%</span></td><td>Высокая стоимость лекарств, самолечение дома</td></tr>
@@ -386,7 +449,7 @@
             <tr><td>74</td><td>Смоленская область</td><td style="text-align: center;"><span class="badge c-orange">64%</span></td><td>Нехватка специалистов первичного звена здравоохранения</td></tr>
 
             <!-- КРАСНАЯ ГРУППА -->
-            <tr><th colspan="4" class="group-header bg-red">Красная группа (> 65%)</th></tr>
+            <tr class="group-row"><th colspan="4" class="group-header bg-red">Красная группа (> 65%)</th></tr>
             <tr><td>75</td><td>Новгородская область</td><td style="text-align: center;"><span class="badge c-red">66%</span></td><td>Сильный дефицит терапевтов и педиатров</td></tr>
             <tr><td>76</td><td>Республика Калмыкия</td><td style="text-align: center;"><span class="badge c-red">66%</span></td><td>Отсутствие узких специалистов, старое оборудование</td></tr>
             <tr><td>77</td><td>Республика Ингушетия</td><td style="text-align: center;"><span class="badge c-red">67%</span></td><td>Катастрофическая нехватка врачей, огромные очереди</td></tr>
