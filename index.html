@@ -3,185 +3,196 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Проекты | Согонокова Омелия</title>
+    <title>Портфолио | Омелия Согонокова</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #2c3e50;
-            --accent: #3498db;
-            --bg: #f4f7f6;
+            --bg: #f9f9fb;
             --card-bg: #ffffff;
-            --text: #333333;
+            --text-main: #2d3436;
+            --text-light: #636e72;
+            --accent: #6c5ce7;       /* Мягкий фиолетовый */
+            --accent-hover: #5f27cd;
+            --btn-doc: #00b894;      /* Цвет для кнопок скачивания */
+            --btn-doc-hover: #00cec9;
         }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Nunito', sans-serif;
         }
+
         body {
             background-color: var(--bg);
-            color: var(--text);
-            line-height: 1.6;
+            color: var(--text-main);
         }
-        /* Шапка сайта */
+
+        /* Шапка */
         header {
-            background-color: var(--primary);
-            color: #fff;
-            padding: 60px 20px;
+            max-width: 900px;
+            margin: 60px auto 40px auto;
+            padding: 0 20px;
             text-align: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
         header h1 {
-            font-size: 36px;
+            font-size: 38px;
+            font-weight: 800;
+            color: var(--text-main);
             margin-bottom: 10px;
-            letter-spacing: 1px;
         }
         header p {
             font-size: 18px;
-            color: #bdc3c7;
-            font-weight: 300;
-        }
-        
-        /* Основной контейнер */
-        .container {
-            max-width: 1100px;
-            margin: 50px auto;
-            padding: 0 20px;
-        }
-        .section-title {
-            text-align: center;
-            font-size: 28px;
-            color: var(--primary);
-            margin-bottom: 40px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
+            color: var(--text-light);
         }
 
         /* Сетка проектов */
-        .projects-grid {
+        .projects-container {
+            max-width: 900px;
+            margin: 0 auto 60px auto;
+            padding: 0 20px;
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            justify-content: center;
+            gap: 25px;
         }
 
-        /* Карточка проекта */
-        .project-card {
+        /* Карточка */
+        .card {
             background-color: var(--card-bg);
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
             display: flex;
             flex-direction: column;
-            max-width: 400px;
-            margin: 0 auto;
+            border: 1px solid #f1f2f6;
         }
-        .project-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
-        }
-        
-        /* Верхняя картинка-заглушка для карточки */
-        .card-image {
-            background: linear-gradient(135deg, #3498db, #2ecc71);
-            height: 160px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 50px;
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.06);
         }
 
-        /* Текст карточки */
-        .card-content {
-            padding: 25px;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-        }
-        .card-title {
-            font-size: 20px;
-            color: var(--primary);
+        .card-emoji {
+            font-size: 45px;
             margin-bottom: 15px;
-            font-weight: 600;
         }
-        .card-description {
+        .card h3 {
+            font-size: 22px;
+            margin-bottom: 10px;
+            color: var(--text-main);
+        }
+        .card p {
             font-size: 15px;
-            color: #666;
+            color: var(--text-light);
             margin-bottom: 25px;
             flex-grow: 1;
+            line-height: 1.5;
         }
 
-        /* Кнопка */
+        /* Кнопки действий (Открыть / Скачать) */
+        .actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
         .btn {
-            display: inline-block;
-            background-color: var(--accent);
-            color: #fff;
-            text-decoration: none;
-            padding: 12px 20px;
-            border-radius: 25px;
-            font-weight: bold;
+            display: block;
             text-align: center;
-            transition: background-color 0.3s;
+            background-color: var(--accent);
+            color: white;
+            text-decoration: none;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 700;
+            transition: 0.2s;
         }
-        .btn:hover {
-            background-color: #2980b9;
+        .btn:hover { background-color: var(--accent-hover); }
+
+        .download-group {
+            display: flex;
+            gap: 10px;
+        }
+        .btn-download {
+            flex: 1;
+            text-align: center;
+            background-color: #f1f2f6;
+            color: var(--text-main);
+            text-decoration: none;
+            padding: 10px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+        .btn-download:hover {
+            background-color: var(--btn-doc);
+            color: white;
         }
 
-        /* Подвал */
-        footer {
-            text-align: center;
-            padding: 30px 20px;
-            color: #7f8c8d;
-            font-size: 14px;
-            margin-top: 50px;
+        /* Карточки в разработке */
+        .card.disabled {
+            opacity: 0.6;
+            box-shadow: none;
         }
+        .card.disabled:hover {
+            transform: none;
+        }
+        .badge-dev {
+            display: inline-block;
+            background-color: #dfe4ea;
+            color: #57606f;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            width: max-content;
+        }
+
     </style>
 </head>
 <body>
 
     <header>
-        <h1>Согонокова Омелия</h1>
-        <p>Портфолио аналитических и исследовательских проектов</p>
+        <h1>Привет! Я Омелия 👋</h1>
+        <p>Здесь я собираю свои проекты, исследования и статистику.</p>
     </header>
 
-    <div class="container">
-        <h2 class="section-title">Мои проекты</h2>
+    <div class="projects-container">
         
-        <div class="projects-grid">
+        <!-- ПРОЕКТ 1: НАША КАРТА -->
+        <div class="card">
+            <div class="card-emoji">🗺️</div>
+            <h3>Медицина в РФ</h3>
+            <p>Статистика отказов от государственных поликлиник по 85 регионам. Интерактивная карта и анализ причин.</p>
             
-            <!-- Проект 1: Наша Карта -->
-            <div class="project-card">
-                <div class="card-image">🗺️</div>
-                <div class="card-content">
-                    <div class="card-title">Статистика медицины в РФ</div>
-                    <div class="card-description">
-                        Интерактивная карта 85 регионов России и статистика отказов граждан от государственных поликлиник в пользу платной медицины и самолечения.
-                    </div>
-                    <!-- ВОТ ЭТА ССЫЛКА ВЕДЕТ НА ТВОЮ КАРТУ -->
-                    <a href="map.html" class="btn">Смотреть проект</a>
+            <div class="actions">
+                <a href="map.html" class="btn">Открыть проект</a>
+                <div class="download-group">
+                    <!-- Ссылки на файлы (нужно будет загрузить их на GitHub) -->
+                    <a href="project.pdf" download class="btn-download">📄 Скачать PDF</a>
+                    <a href="project.pptx" download class="btn-download">📊 PPTX</a>
                 </div>
             </div>
-
-            <!-- Проект 2: Заглушка (для красоты, пока пустая) -->
-            <div class="project-card">
-                <div class="card-image" style="background: linear-gradient(135deg, #9b59b6, #e74c3c);">📊</div>
-                <div class="card-content">
-                    <div class="card-title">Будущий проект</div>
-                    <div class="card-description">
-                        Здесь в будущем появится ваше новое исследование, статистика или аналитический дашборд.
-                    </div>
-                    <a href="#" class="btn" style="background-color: #ccc; cursor: not-allowed;">В разработке</a>
-                </div>
-            </div>
-
         </div>
-    </div>
 
-    <footer>
-        &copy; 2026 Согонокова Омелия. Все права защищены.
-    </footer>
+        <!-- ПРОЕКТ 2 (Пустой) -->
+        <div class="card disabled">
+            <div class="badge-dev">В разработке</div>
+            <h3>Новый проект</h3>
+            <p>Скоро здесь появится новая статистика или интерактивный дашборд.</p>
+        </div>
+
+        <!-- ПРОЕКТ 3 (Пустой) -->
+        <div class="card disabled">
+            <div class="badge-dev">В разработке</div>
+            <h3>Исследование</h3>
+            <p>Сбор данных начат. Проект будет опубликован после анализа результатов.</p>
+        </div>
+
+    </div>
 
 </body>
 </html>
